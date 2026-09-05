@@ -1,0 +1,3 @@
+  [错误] 未能定位 pes6server 组件【当前解析目录=D:\Games\zhipuPES\pes6server】
+  请进入 pes6server 文件夹后直接双击 PC_host_1-启动服务器.bat
+请按任意键继续. . . 

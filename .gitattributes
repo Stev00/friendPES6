@@ -1,0 +1,10 @@
+# 禁止 git 做任何换行/编码转换(bat 是 GBK+CRLF, 转换会损坏; 仓库内全部按原样存)
+* -text
+*.exe binary
+*.dll binary
+*.zip binary
+*.tar binary
+*.afs binary
+*.dat binary
+*.py -text
+*.md -text

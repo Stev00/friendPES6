@@ -1,0 +1,9 @@
+Fiveserver 0.4.8 Win32 release
+Built with Python 2.7 and Twisted 10.2.0
+
+
+Credits:
+========
+Protocol analysis and reverse engineering: reddwarf, juce
+Server programming: juce, reddwarf
+

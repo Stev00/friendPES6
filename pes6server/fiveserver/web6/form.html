@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>PES6 Home Server - Registration</title>
+<script src="/md5.js"></script>
+<script>
+function makeHash() {
+  var a = document.getElementById('serial').value;
+  a = a.replace(/^\s+/,'').replace(/\s+$/,'').replace(/-/g,'').toUpperCase();
+  if (!a.match(/^[A-Z0-9]{20}$/)) {
+    alert('Serial must be 20 letters/digits (your game install code).');
+    return false;
+  }
+  var padded = a;
+  while (padded.length < 36) { padded += '\0'; }
+  var u = document.getElementById('user').value;
+  u = u.replace(/^\s+/,'').replace(/\s+$/,'');
+  if (u.length < 3 || !u.match(/^[0-9a-zA-Z]+$/)) {
+    alert('Username: 3+ chars, letters/digits only.');
+    return false;
+  }
+  var p = document.getElementById('password').value;
+  if (p.length < 3) {
+    alert('Password: 3+ chars.');
+    return false;
+  }
+  document.getElementById('hash').value = hex_md5(padded + u + '-' + p);
+  return true;
+}
+</script>
+</head>
+<body>
+<h3>PES6 Home Server - Account Registration</h3>
+<p>Register an account for this server. Use the <b>same username and password</b> when logging in from the game (Network mode).</p>
+<form method="post" action="/" onsubmit="return makeHash();">
+  <p>Username (game login ID): <input id="user" name="user" maxlength="15" value="%(username)s"></p>
+  <p>Serial (20-char game code, e.g. A6V9D5HXPT62H4PFWA45): <input id="serial" name="serial" maxlength="24" value="%(serial)s"></p>
+  <p>Password: <input id="password" name="password" type="password" maxlength="20"></p>
+  <input type="hidden" name="hash" id="hash" value="">
+  <input type="hidden" name="nonce" value="%(nonce)s">
+  <input type="hidden" name="format" value="html">
+  <input type="submit" value="Register">
+</form>
+<p>Tip: the serial is the "code" written by install.bat (A6V9D5HXPT62H4PFWA45 for this game copy).</p>
+</body>
+</html>

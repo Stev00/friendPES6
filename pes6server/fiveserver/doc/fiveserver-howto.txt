@@ -1,0 +1,39 @@
+How to play online with Fiveserver:
+===================================
+
+
+1. If you use Kitserver 5.4.0, then all you need to do
+is modify your network.cfg, and set these options correctly:
+
+network.server = <your-fiveserver-host>
+network.stun-server = "www.stunserver.org"
+
+
+2. If you don't use Kitserver, then you will need to hexedit
+your WE9LEK.exe file so that it tries to connect to your server.
+
+Step 1: (You only need to do it once)
+In your hosts file, add this line at the end:
+
+132.177.123.13    stun.we9le.konami-asia.com
+
+Step 2: If you don't already have an account on Fiveserver,
+fill out the registration form and click "Register":
+http://<your-fiveserver-host>:8180/form
+
+Step 3. Modify WE9LEK.exe that you use to launch the game:
+
+At offset 0x6d8f20, you should see this: 61.82.71.50\0
+Change it to be: <your-fiveserver-host>\0 
+(make sure you have the 0-byte, after your hostname)
+
+Step 4. Go to 'Network', then when asked for serial number
+and password, make sure you enter the same serial number that
+you have registered with. For password, it is important to 
+enter both your username and password, separated by dash ('-')
+
+For example: 
+Username: durak66
+Password: glukalovo
+
+You must enter: durak66-glukalovo

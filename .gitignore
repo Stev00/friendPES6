@@ -1,0 +1,24 @@
+# ===== 版权与超大文件: 游戏本体不入库(见 README 第十三节) =====
+PES6.exe
+settings.exe
+dat/
+opmov/
+
+# ===== 运行时大件与数据(含嵌套路径) =====
+mysql/
+pes6server/mysql/
+
+# ===== 日志 =====
+fiveserver/log/
+stun/log/
+pes6server/fiveserver/log/
+pes6server/stun/log/
+*.log
+
+# ===== 归档中的大件(源码包/安装包/解压物, 体积巨大) =====
+_archive/_build/
+pes6server/_archive/_build/
+
+# ===== 系统杂项 =====
+Thumbs.db
+desktop.ini
