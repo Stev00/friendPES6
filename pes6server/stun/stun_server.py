@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 r"""
-PES6 自建 STUN (老式 RFC3489 语义)  v6
+PES6 自建 STUN (老式 RFC3489 语义) + 对战 UDP 中继  v7
 - 主 socket:  0.0.0.0:3478          (接收一切首次探测)
 - 备 socket:  LAN_IP:3479 / 127.0.0.1:3479   (真实"第二IP:端口", 满足 CHANGE-REQUEST)
 - Binding Response 携带 MAPPED-ADDRESS / SOURCE-ADDRESS / CHANGED-ADDRESS
@@ -11,8 +11,11 @@ PES6 自建 STUN (老式 RFC3489 语义)  v6
     其他(公网)   -> 通告 PUBLIC_IP (经 ikuai DNAT/SNAT 后客户端看到的就是它)
 - CHANGE-REQUEST: 从备 socket(真换IP+换端口)应答;
   公网来源额外从主端口补发一份兜底应答(防端口受限 NAT 收不到)
-- v6 移除旧版 UDP 5730-5740 echo: 它会抢走主机游戏的对战端口 5730
-  (游戏报"无法使用 UDP 端口 5730"), 且会把客机发来的 P2P 包吞掉
+- v6 移除旧版 UDP 5730-5740 echo
+- v7 新增 --relay-port 对战中继: STUN 应答把 MAPPED-ADDRESS 通告为
+  "公网IP:中继端口", 双方对战流汇聚到本进程中继线程, 转发互达——
+  彻底绕开客户端侧 NAT 端口改写/过滤(如 
+elease 类目录名、运营商光猫), 零配置联机
 - 日志双通道: 控制台 + stun\log\stun_run.log
 用法: python stun_server.py --public-ip 1.2.3.4 --lan-ip 192.168.50.113
 """
@@ -80,11 +83,12 @@ def parse_attrs(data: bytes):
 
 
 class StunServer:
-    def __init__(self, lan_ip, pub_ip, base_port=3478):
+    def __init__(self, lan_ip, pub_ip, base_port=3478, relay_port=0):
         self.lan_ip = lan_ip
         self.pub_ip = pub_ip
         self.base_port = base_port
         self.alt_port = base_port + 1
+        self.relay_port = relay_port
         self.primary = None
         self.alt_loop = None
         self.alt_lan = None
@@ -121,8 +125,10 @@ class StunServer:
         creq = attrs.get(ATTR_CHANGE_REQ)
         want_change = bool(creq and len(creq) >= 4
                            and (struct.unpack('!I', creq[:4])[0] & 0x06))
+        mapped = ((self.pub_ip, self.relay_port) if self.relay_port
+                  else (peer_ip, peer_port))
         if want_change and alt_sock is not None:
-            pkt = self._resp(txid, (peer_ip, peer_port),
+            pkt = self._resp(txid, mapped,
                              (adv, self.alt_port), (adv, self.alt_port))
             try:
                 alt_sock.sendto(pkt, addr)
@@ -132,7 +138,7 @@ class StunServer:
             if not is_loopback(peer_ip) and not is_private_lan(peer_ip):
                 # 公网来源(端口受限 NAT 可能收不到 :3479 的回包):
                 # 同时从主端口补发一份"未变更"应答兜底
-                pkt2 = self._resp(txid, (peer_ip, peer_port),
+                pkt2 = self._resp(txid, mapped,
                                   (adv, self.base_port), (adv, self.alt_port))
                 try:
                     self.primary.sendto(pkt2, addr)
@@ -140,7 +146,7 @@ class StunServer:
                 except OSError:
                     pass
         else:
-            pkt = self._resp(txid, (peer_ip, peer_port),
+            pkt = self._resp(txid, mapped,
                              (adv, self.base_port), (adv, self.alt_port))
             self.primary.sendto(pkt, addr)
             out(f'STUN {peer_ip}:{peer_port} -> primary {adv}:{self.base_port}')
@@ -158,7 +164,9 @@ class StunServer:
             sock.sendto(data, addr)
             return
         adv = self.advert_ip(peer_ip)
-        pkt = self._resp(txid, (peer_ip, peer_port), (adv, self.alt_port),
+        mapped = ((self.pub_ip, self.relay_port) if self.relay_port
+                  else (peer_ip, peer_port))
+        pkt = self._resp(txid, mapped, (adv, self.alt_port),
                          (adv, self.alt_port))
         sock.sendto(pkt, addr)
         out(f'STUN {peer_ip}:{peer_port} (alt-direct) -> {adv}:{self.alt_port}')
@@ -212,6 +220,10 @@ class StunServer:
                     target=self._loop,
                     args=(s, lambda d, a, sk=s: self.handle_alt(sk, d, a)),
                     daemon=True))
+        if self.relay_port:
+            threads.append(threading.Thread(target=self._relay_loop,
+                                            daemon=True))
+            out(f'中继已启动: 0.0.0.0:{self.relay_port} (对战流互转模式)')
         for t in threads:
             t.start()
         try:
@@ -229,13 +241,50 @@ class StunServer:
                 out(f'[warn] {e}')
                 time.sleep(0.2)
 
+    def _relay_loop(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('0.0.0.0', self.relay_port))
+        s.settimeout(1.0)
+        peers = {}
+        recent = []          # (time, data, addr) 近期包缓冲, 供新端点补发
+        while True:
+            try:
+                data, addr = s.recvfrom(65535)
+            except socket.timeout:
+                continue
+            except OSError as e:
+                out(f'[warn] relay {e}')
+                continue
+            now = time.time()
+            known = [p for p, t in list(peers.items()) if now - t < 60]
+            if addr not in known:
+                out(f'中继: 新端点 {addr[0]}:{addr[1]} (当前 {len(known)+1} 个)')
+                # 把最近 3 秒内的缓冲包补发给新端点(消除首包竞态)
+                for bt, bdata, baddr in list(recent):
+                    if now - bt <= 3 and baddr != addr:
+                        try:
+                            s.sendto(bdata, addr)
+                        except OSError:
+                            pass
+            peers[addr] = now
+            recent.append((now, data, addr))
+            del recent[:-64]
+            for p in known:
+                if p != addr:
+                    try:
+                        s.sendto(data, p)
+                    except OSError:
+                        pass
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--public-ip', required=True)
     ap.add_argument('--lan-ip', default='192.168.50.113')
     ap.add_argument('--base-port', type=int, default=3478)
+    ap.add_argument('--relay-port', type=int, default=0)
     a = ap.parse_args()
-    StunServer(a.lan_ip, a.public_ip, a.base_port).run()
+    StunServer(a.lan_ip, a.public_ip, a.base_port, a.relay_port).run()
 
 
 if __name__ == '__main__':

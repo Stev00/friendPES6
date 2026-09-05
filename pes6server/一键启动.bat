@@ -5,8 +5,8 @@ if /i not "%~1"=="/inner" (
   cmd /k ""%~f0" /inner"
   exit /b
 )
-rem 版本: v1.0 (2026-09-05)  zhangdansan(stevoo)
-echo 【版本】 一键启动 v1.0 (2026-09-05)
+rem 版本: v1.1 (2026-09-05)  zhangdansan(stevoo)
+echo 【版本】 一键启动 v1.1 (2026-09-05)
 if not exist "scripts\PC_host_1_启动服务器.bat" (
 echo 【错误】 未能定位 pes6server 目录【当前目录=%CD%】
 echo 请不要从别处启动本脚本: 进入 pes6server 文件夹后, 直接双击它
@@ -172,13 +172,15 @@ echo 【跳过】 install.bat 已运行过
 
 echo.
 echo ============================================================
-echo 【2/5】检查 settings.dat【UDP 端口自动补丁为 5730; "自动"勾选与 UPnP 需在 settings.exe 手动不勾】
+echo 【2/5】检查 settings.dat【UDP 端口自动补丁为 5730】
+echo 【重要】 settings.exe 里 UPnP 请保持勾选! 它是对战 P2P 联机的关键(自动在路由器开端口)
 set "SDAT="
 if exist "%USERPROFILE%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat" set "SDAT=%USERPROFILE%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat"
 if not defined SDAT if defined OneDrive if exist "%OneDrive%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat" set "SDAT=%OneDrive%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat"
 if defined SDAT (
   powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='%SDAT%'; if (-not (Test-Path ($p+'.pes6bak'))){Copy-Item $p ($p+'.pes6bak')}; $b=[IO.File]::ReadAllBytes($p); $old=$b[416]+$b[417]*256; $b[416]=0x62; $b[417]=0x16; [IO.File]::WriteAllBytes($p,$b); Write-Host ('  【OK】 UDP 端口已设为 5730 【原值 '+$old+'】, 备份在 settings.dat.pes6bak')"
-echo 【提示】 "自动"勾选与 UPnP 无法自动修改; 若处于勾选状态, 请在 settings.exe 里取消一次
+echo 【提示】 若对战黑屏: 打开 settings.exe 确认 UPnP 处于勾选状态, 保存后重启游戏重连
+echo        ("自动"勾选已被自动补丁处理; UPnP 是客机对战的关键, 千万别取消)
 ) else (
 echo 【警告】 未找到 settings.dat【还没保存过游戏设置】, 请手动做一次:
 echo 双击游戏目录的 settings.exe: UDP 端口取消"自动"勾选并填 5730, UPnP 不勾, 点保存
@@ -205,8 +207,14 @@ echo 游戏首次联网若被拦, 弹窗中"专用+公用"都勾允许, 或临时关闭防火墙
 
 echo.
 echo ============================================================
-echo 【5/5】链路验证
-ping -n 6 %PUBIP%
+echo 【5/5】链路验证(TCP 直连 8190/8191/10881, 不走 ping/ICMP)
+if "%PUBIP%"=="" (
+echo 【跳过】 未提供公网 IP, 无法链路验证
+) else (
+  powershell -NoProfile -Command "8190,8191,10881 | ForEach-Object {$c=New-Object Net.Sockets.TcpClient;$r=$c.BeginConnect('%PUBIP%',$_,$null,$null);if($r.AsyncWaitHandle.WaitOne(5000,$true) -and $c.Connected){Write-Host ('  【OK】 TCP '+$_+' 可达')}else{Write-Host ('  【X】 TCP '+$_+' 连不上')};$c.Close()}"
+echo 【说明】 有【OK】即链路通【这是 TCP 检测, 与 ping/ICMP 无关】; 正式收尾删了 8190 映射的话, 8190 不通属正常
+echo          全部不通才需排查: 主机服务是否在跑 / 防火墙 TCP 规则 / 路由器 DMZ 端口映射
+)
 :ask_game_c
 set "G="
 set /p "G=现在启动游戏吗? (Y/N) (输入后按回车): "
