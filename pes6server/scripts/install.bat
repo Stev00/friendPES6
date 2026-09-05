@@ -3,6 +3,8 @@ setlocal EnableExtensions
 
 title Pro Evolution Soccer 6 - Portable Installer
 
+if /i "%~1"=="/nopause" set "NOPAUSE=1"
+
 echo ==========================================
 echo Pro Evolution Soccer 6
 echo Portable Registry Installer
@@ -13,8 +15,8 @@ rem ------------------------------------------------------------
 rem Get directory of this BAT file
 rem ------------------------------------------------------------
 
-set "GAME_DIR=%~dp0"
-set "GAME_DIR=%GAME_DIR:~0,-1%"
+set "GAME_DIR=%~dp0..\.."
+for %%i in ("%GAME_DIR%") do set "GAME_DIR=%%~fi"
 
 echo Game directory:
 echo %GAME_DIR%
@@ -140,5 +142,4 @@ echo ==========================================
 echo Installation completed.
 echo ==========================================
 echo.
-
-pause
+if not defined NOPAUSE pause

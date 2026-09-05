@@ -22,3 +22,5 @@ pes6server/_archive/_build/
 # ===== 系统杂项 =====
 Thumbs.db
 desktop.ini
+# ===== Python 运行时 =====
+__pycache__/

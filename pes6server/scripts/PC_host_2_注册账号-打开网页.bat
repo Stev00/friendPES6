@@ -1,6 +1,6 @@
 @echo off
 rem 版本: v1.0 (2026-09-05)  zhangdansan(stevoo)
-echo [版本] PC_host_2_注册账号-打开网页 v1.0 (2026-09-05)
+echo 【版本】 PC_host_2_注册账号-打开网页 v1.0 (2026-09-05)
 :parse_args
 
 if /i "%~1"=="/nopause" (

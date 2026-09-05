@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 r"""
-PES6 自建 STUN (老式 RFC3489 语义) + UDP echo 应答器  v5
+PES6 自建 STUN (老式 RFC3489 语义)  v6
 - 主 socket:  0.0.0.0:3478          (接收一切首次探测)
 - 备 socket:  LAN_IP:3479 / 127.0.0.1:3479   (真实"第二IP:端口", 满足 CHANGE-REQUEST)
 - Binding Response 携带 MAPPED-ADDRESS / SOURCE-ADDRESS / CHANGED-ADDRESS
@@ -11,7 +11,8 @@ PES6 自建 STUN (老式 RFC3489 语义) + UDP echo 应答器  v5
     其他(公网)   -> 通告 PUBLIC_IP (经 ikuai DNAT/SNAT 后客户端看到的就是它)
 - CHANGE-REQUEST: 从备 socket(真换IP+换端口)应答;
   公网来源额外从主端口补发一份兜底应答(防端口受限 NAT 收不到)
-- 另有 UDP 5730-5740 echo (端口被占则跳过; 游戏自己会占 5730)
+- v6 移除旧版 UDP 5730-5740 echo: 它会抢走主机游戏的对战端口 5730
+  (游戏报"无法使用 UDP 端口 5730"), 且会把客机发来的 P2P 包吞掉
 - 日志双通道: 控制台 + stun\log\stun_run.log
 用法: python stun_server.py --public-ip 1.2.3.4 --lan-ip 192.168.50.113
 """
@@ -194,23 +195,13 @@ class StunServer:
             out('[致命] 没有任何备用 3479 socket 可用')
             sys.exit(1)
 
-        echo_ports = []
-        for p in range(5730, 5741):
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            try:
-                s.bind(('0.0.0.0', p))
-                echo_ports.append((s, p))
-            except OSError as e:
-                out(f'[跳过] UDP {p} 被占用(errno={e.errno})')
-
         bound_alts = []
         if self.alt_loop is not None:
             bound_alts.append(f'127.0.0.1:{self.alt_port}')
         if self.alt_lan is not None:
             bound_alts.append(f'{self.lan_ip}:{self.alt_port}')
         out(f'STUN primary=0.0.0.0:{self.base_port} alt={bound_alts} '
-            f'echo={[p for _, p in echo_ports]} LAN={self.lan_ip} PUB={self.pub_ip}')
+            f'LAN={self.lan_ip} PUB={self.pub_ip}')
 
         threads = [threading.Thread(target=self._loop,
                                     args=(self.primary, self.handle_primary),
@@ -219,11 +210,8 @@ class StunServer:
             if s is not None:
                 threads.append(threading.Thread(
                     target=self._loop,
-                    args=(s, lambda d, a, sk=s, si=ip: self.handle_alt(sk, si, d, a)),
+                    args=(s, lambda d, a, sk=s: self.handle_alt(sk, d, a)),
                     daemon=True))
-        for s, p in echo_ports:
-            threads.append(threading.Thread(target=self._loop_echo, args=(s, p),
-                                            daemon=True))
         for t in threads:
             t.start()
         try:
@@ -240,17 +228,6 @@ class StunServer:
             except Exception as e:
                 out(f'[warn] {e}')
                 time.sleep(0.2)
-
-    def _loop_echo(self, sock, port):
-        while True:
-            try:
-                data, addr = sock.recvfrom(2048)
-                sock.sendto(data, addr)
-                out(f'ECHO:{port} {addr[0]}:{addr[1]} {len(data)}B')
-            except Exception as e:
-                out(f'[warn] echo {port}: {e}')
-                time.sleep(0.2)
-
 
 def main():
     ap = argparse.ArgumentParser()
