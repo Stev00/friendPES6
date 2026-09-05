@@ -124,6 +124,8 @@ echo 【信息】 STUN 已启动
 ) else (
 echo 【信息】 STUN 已在运行, 跳过
 )
+ping -n 3 127.0.0.1 >nul
+netstat -ano -p udp | findstr ":5731" >nul && echo 【OK】 STUN 中继 5731 已监听(对战流互转) || echo 【X】 中继 5731 未监听, 对战会黑屏
 
 rem ============ 7. 启动 Sixserver(已在运行则跳过) ============
 netstat -ano -p tcp | findstr /c:":20202 " | findstr LISTENING >nul

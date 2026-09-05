@@ -247,16 +247,25 @@ class StunServer:
         s.bind(('0.0.0.0', self.relay_port))
         s.settimeout(1.0)
         peers = {}
+        counters = {}
+        last_stat = time.time()
         recent = []          # (time, data, addr) 近期包缓冲, 供新端点补发
         while True:
             try:
                 data, addr = s.recvfrom(65535)
             except socket.timeout:
+                if time.time() - last_stat >= 10 and counters:
+                    stat = ' | '.join(f'{p[0]}:{p[1]} 收{counters.get(p,0)}包'
+                                      for p, t in list(peers.items())
+                                      if time.time() - t < 60)
+                    out(f'中继统计({self.relay_port}): {stat}')
+                    last_stat = time.time()
                 continue
             except OSError as e:
                 out(f'[warn] relay {e}')
                 continue
             now = time.time()
+            counters[addr] = counters.get(addr, 0) + 1
             known = [p for p, t in list(peers.items()) if now - t < 60]
             if addr not in known:
                 out(f'中继: 新端点 {addr[0]}:{addr[1]} (当前 {len(known)+1} 个)')
@@ -270,6 +279,12 @@ class StunServer:
             peers[addr] = now
             recent.append((now, data, addr))
             del recent[:-64]
+            if time.time() - last_stat >= 10:
+                stat = ' | '.join(f'{p[0]}:{p[1]} 收{counters.get(p,0)}包'
+                                  for p, t in list(peers.items())
+                                  if time.time() - t < 60)
+                out(f'中继统计({self.relay_port}): {stat}')
+                last_stat = time.time()
             for p in known:
                 if p != addr:
                     try:
