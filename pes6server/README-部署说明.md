@@ -197,7 +197,7 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 **⑨ Kitserver**
 
 - PES6 通用 mod 框架（球衣/球场/足球/参数/lod）
-- 版本已确定【已验证 2026-09-05 网络查证】：用户手中持有 **6.8.0**（juce & robbie，2020-04），最新为 **6.8.1**（juce，源码现代化构建）；早期资料所称"6.6.0 最终版/6.6.4"已过时作废。下载源：pesnewupdate.com / ultigamerz.com；源码：github.com/kitserver/kitserver6
+- 版本已确定【已验证 2026-09-05 官方 history.txt】：权威版本源=kitserver.mapote.com/ks6/history.txt，最新为 **6.8.2**(2021-04-22, skinserver+窗口化)，其后为 6.8.1(2020-05-05)/6.8.0(2020-05-02, juce&robbie, 用户手中持有, 联机功能完全够用)；6.8.x 二进制经社区渠道分发(EvoWeb/Facebook EFLPatchPES6 的 mediafire)，mapote 官方文件库仅托管到 kitserver-572；源码：github.com/kitserver/kitserver6
 - 安装：解压至游戏根目录(dev)→运行 setup.exe；两台机器必须同版本；装完后 make_release 复制清单需补 kitserver 目录及根目录新增 dll【待办】
 - 官方 howto 提到 kitserver 的 network.cfg 可直接指定 network.server=服务器地址——在 PES6 下是否同样生效【待验证】，若可用可替代改 hosts 的方案
 
@@ -382,5 +382,7 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 | 2026-09-05 22:51 | ⑨Kitserver 版本查证更正：此前"6.6.0 最终版/6.6.4 社区版"说法过时作废——用户已持有 6.8.0(juce&robbie 2020-04)，最新 6.8.1；网络查证下载源与安装要点已补入待办⑨
 
 | 2026-09-05 22:56 | 新增【明日联机清单】(待办⑨⑪落地步骤)：kitserver 6.8.0 直链(MEGA)、两机同版本要求、中继验证判定标准、三方分工；kitserver 6.8.0 官方直链确认自 ultigamerz 页面(MEGA 网盘)
+
+| 2026-09-05 23:17 | ⑨Kitserver 版本记录以官方 history.txt 为权威源更正：最新 6.8.2(2021-04-22)>6.8.1>6.8.0(用户持有,联机够用)；6.8.x 二进制走社区渠道分发
 
 【维护约定】本文档随每次改动同步更新，不另行通知。
