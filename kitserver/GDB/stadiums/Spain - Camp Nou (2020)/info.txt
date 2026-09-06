@@ -1,0 +1,3 @@
+built = 1957
+capacity = 99354
+city = Barcelona

@@ -1,0 +1,5 @@
+# Stadium information
+
+built = 2006
+capacity = 60432
+city = London
