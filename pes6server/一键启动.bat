@@ -59,6 +59,11 @@ echo 【需要设置】 首次使用或目录已变更: 正在自动运行 install.bat 写入注册信息...
 ) else (
 echo 【跳过】 install.bat 注册路径与当前一致
 )
+if exist "%GAME_DIR%\kitserver\kload.cfg" (
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0kit_resolution.ps1" "%GAME_DIR%\kitserver\kload.cfg"
+) else (
+echo 【跳过】 kitserver 未安装, 跳过分辨率适配
+)
 set "PES6_ROOT=%ROOT%"
 pushd "%ROOT%"
 call "%~dp0scripts\PC_host_1_启动服务器.bat" /nopause
@@ -172,6 +177,11 @@ echo 【跳过】 install.bat 已运行过
 
 echo.
 echo ============================================================
+if exist "%GAME_DIR%\kitserver\kload.cfg" (
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0kit_resolution.ps1" "%GAME_DIR%\kitserver\kload.cfg"
+) else (
+echo 【跳过】 kitserver 未安装, 跳过分辨率适配
+)
 echo 【2/5】检查 settings.dat【UDP 端口自动补丁为 5730】
 echo 【重要】 settings.exe 里 UPnP 请保持勾选! 它是对战 P2P 联机的关键(自动在路由器开端口)
 set "SDAT="
