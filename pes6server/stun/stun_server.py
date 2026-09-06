@@ -17,6 +17,8 @@ PES6 自建 STUN (老式 RFC3489 语义) + 对战 UDP 中继  v8 (预注册主�
   彻底绕开客户端侧 NAT 端口改写/过滤(如 
 elease 类目录名、运营商光猫), 零配置联机
 - 日志双通道: 控制台 + stun\log\stun_run.log
+- v8 内置 RTT 测量应答器(udp/5735): 客机一键启动【5/5】自动完成 20 次探测,
+  结果逐包记录 stun\log\rtt_results.log——对战链路延迟全程可测
 用法: python stun_server.py --public-ip 1.2.3.4 --lan-ip 192.168.50.113
 """
 import argparse
@@ -39,6 +41,8 @@ MSG_BINDING_RESP = 0x0101
 SOFTWARE = b'PES6-HOME-STUN'
 
 LOGF = None
+RTTLOGF = None
+RTT_PORT = 5735
 
 
 def out(msg):
@@ -221,6 +225,9 @@ class StunServer:
                     target=self._loop,
                     args=(s, lambda d, a, sk=s: self.handle_alt(sk, d, a)),
                     daemon=True))
+        global RTTLOGF
+        RTTLOGF = open(os.path.join(log_dir, 'rtt_results.log'), 'a', encoding='utf-8')
+        threads.append(threading.Thread(target=self._rtt_loop, daemon=True))
         if self.relay_port:
             threads.append(threading.Thread(target=self._relay_loop,
                                             daemon=True))
@@ -232,6 +239,51 @@ class StunServer:
                 time.sleep(3600)
         except KeyboardInterrupt:
             pass
+
+    def _rtt_loop(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('0.0.0.0', RTT_PORT))
+        s.settimeout(0.5)
+        out(f'RTT 应答器已启动 udp/{RTT_PORT} (结果见 log/rtt_results.log)')
+        pending = {}
+        probed = {}
+        while True:
+            try:
+                data, addr = s.recvfrom(2048)
+            except socket.timeout:
+                continue
+            except OSError:
+                continue
+            ep = addr
+            if data.startswith(b'RTT-HELLO'):
+                last = probed.get(ep, 0)
+                if time.time() - last > 60:
+                    probed[ep] = time.time()
+                    out(f'RTT 会话开始: {ep[0]}:{ep[1]}')
+                    def _probe(ep=ep):
+                        for i in range(20):
+                            time.sleep(0.25)
+                            try:
+                                pending[(ep, i)] = time.time()
+                                s.sendto(b'RTT-PROBE ' + str(i).encode(), ep)
+                            except OSError:
+                                pass
+                    threading.Thread(target=_probe, daemon=True).start()
+            elif data.startswith(b'RTT-PROBE '):
+                try:
+                    i = int(data.split()[1])
+                    t0 = pending.pop((ep, i), None)
+                    if t0 is not None:
+                        rtt = (time.time() - t0) * 1000
+                        if RTTLOGF is not None:
+                            try:
+                                RTTLOGF.write(f'[{time.strftime("%Y-%m-%d %H:%M:%S")}] RTT {ep[0]}:{ep[1]} #{i}: {rtt:.1f}ms' + chr(10))
+                                RTTLOGF.flush()
+                            except Exception:
+                                pass
+                except Exception:
+                    pass
 
     def _loop(self, sock, handler):
         while True:
