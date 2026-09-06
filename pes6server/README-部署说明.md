@@ -385,4 +385,8 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 
 | 2026-09-05 23:17 | ⑨Kitserver 版本记录以官方 history.txt 为权威源更正：最新 6.8.2(2021-04-22)>6.8.1>6.8.0(用户持有,联机够用)；6.8.x 二进制走社区渠道分发
 
+| 2026-09-05 09:52 | 新增 kitserver 分辨率自适应：一键启动主机【1/6】/客机【2/5】比对 kitserver\kload.cfg 的 dx.fullscreen 与 internal.resolution 四项和当前屏幕分辨率，不一致自动改写(新增 scripts\kit_resolution.ps1，幂等)；本机实测 1920x1080→2560x1440 改写+MATCH 幂等两态均验证；kitserver(9.3M, 6.8.0) 已入库并进 make_release 同步清单(含 kload.cfg 校验)
+
+| 2026-09-05 09:52 | 新增 kitserver 分辨率自适应：一键启动主机【1/6】/客机【2/5】比对 kitserver\kload.cfg 的 dx.fullscreen 与 internal.resolution 四项和当前屏幕分辨率，不一致自动改写(新增 scripts\kit_resolution.ps1，幂等)；本机实测 1920x1080→2560x1440 改写+MATCH 幂等两态均验证；kitserver(9.3M, 6.8.0) 已入库并进 make_release 同步清单(含 kload.cfg 校验)
+
 【维护约定】本文档随每次改动同步更新，不另行通知。
