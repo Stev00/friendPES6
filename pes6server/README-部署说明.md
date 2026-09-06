@@ -190,9 +190,10 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 
 **⑧ 中文汉化**
 
-- 方案：替换 `dat\e_text.afs`（文本）/`e_sound.afs`（解说）为中文补丁包
-- 注意：社区有"联机必须英文文本"的旧说法【待验证】；A/B 两台必须装同一版汉化，否则对战时 roster 对比会不一致
-- 动手前备份原版 e_text/e_sound
+- 【进行中 2026-09-06】用户已将中文版 e_text.afs(24.8MB, MD5=1fbc8603f54cfe7099c6df874b212d8a) 替换进 dev 与 release 两侧 dat`，双侧 MD5 一致 → roster hash 两端同步变化、互不冲突；afs2fs(afs.root="dat") 无松散覆盖目录，替换生效
+- 【待办】新 e_text.afs 必须发给朋友覆盖其 dat 内同名文件(英文旧版)，否则 roster hash 分叉 → 开局同步失败
+- 原英文版未入 git(dat/ 排除)；D:\Games 下其他 PES6 目录有同版英文文件可还原
+- "联机必须英文文本"的旧说法：双侧同版即可，中英文本身不设限【待验证，以明日实战为准】
 
 **⑨ Kitserver**
 
@@ -240,6 +241,7 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 1. 完全退出游戏重新启动、重新登录 Andriy_Han（必须，重新 STUN 拿中继地址）
 2. 把收到的 kitserver 文件放进他的游戏根目录（与主机同版本）
 3. 防火墙保持关闭/360 保持退出（或给 PES6 放行）；他家光猫**无需任何配置**（中继已绕开）
+4. 用 QQ 接收主机发来的**新 e_text.afs(24.8MB 中文版)**，放进他游戏根目录 `dat\` 覆盖同名文件（版本不一致会导致开局 roster 比对失败）
 
 **判定标准**
 - 开赛后 stun_run.log 中继统计出现双方端点且收包数持续增长 = 对战流经中继互通
@@ -392,5 +394,7 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 | 2026-09-06 10:10 | 修复 kitserver 分辨率检测两处：①DPI 缩放陷阱——PrimaryScreen.Bounds 返回逻辑分辨率(4K@150%=2560x1440)，改用 WMI Win32_VideoController 读物理分辨率(实测 3840x2160)；②多显示器——检测到多个不同分辨率时列出让用户选择(朋友 Win7 用 Get-WmiObject 兼容)；make_release.bat 已确认含 /R:1 /W:1 与 kitserver 清单并完成同步；8191 管理页 ERR_SSL_VERSION_OR_CIPHER_MISMATCH 定性：2006 年代栈的老 TLS 与现代浏览器不兼容，服务本身正常，非必需页面
 
 | 2026-09-06 10:10 | 修复 kitserver 分辨率检测两处：①DPI 缩放陷阱——PrimaryScreen.Bounds 返回逻辑分辨率(4K@150%=2560x1440)，改用 WMI Win32_VideoController 读物理分辨率(实测 3840x2160)；②多显示器——检测到多个不同分辨率时列出让用户选择(朋友 Win7 用 Get-WmiObject 兼容)；make_release.bat 已确认含 /R:1 /W:1 与 kitserver 清单并完成同步；8191 管理页 ERR_SSL_VERSION_OR_CIPHER_MISMATCH 定性：2006 年代栈的老 TLS 与现代浏览器不兼容，服务本身正常，非必需页面
+
+| 2026-09-06 10:40 | ⑧汉化落地：用户已将中文 e_text.afs 替换进 dev/release 两侧(双侧 MD5 一致, roster hash 同步变化不冲突; afs2fs 无覆盖冲突)；明日清单新增=新 e_text.afs 必须同步给朋友，否则开局 roster 比对失败
 
 【维护约定】本文档随每次改动同步更新，不另行通知。
