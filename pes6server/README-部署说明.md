@@ -389,4 +389,8 @@ dev\                              ← 开发区(游戏+项目+git 仓库, 本文
 
 | 2026-09-06 09:52 | 新增 kitserver 分辨率自适应：一键启动主机【1/6】/客机【2/5】比对 kitserver\kload.cfg 的 dx.fullscreen 与 internal.resolution 四项和当前屏幕分辨率，不一致自动改写(新增 scripts\kit_resolution.ps1，幂等)；本机实测 1920x1080→2560x1440 改写+MATCH 幂等两态均验证；kitserver(9.3M, 6.8.0) 已入库并进 make_release 同步清单(含 kload.cfg 校验)
 
+| 2026-09-06 10:10 | 修复 kitserver 分辨率检测两处：①DPI 缩放陷阱——PrimaryScreen.Bounds 返回逻辑分辨率(4K@150%=2560x1440)，改用 WMI Win32_VideoController 读物理分辨率(实测 3840x2160)；②多显示器——检测到多个不同分辨率时列出让用户选择(朋友 Win7 用 Get-WmiObject 兼容)；make_release.bat 已确认含 /R:1 /W:1 与 kitserver 清单并完成同步；8191 管理页 ERR_SSL_VERSION_OR_CIPHER_MISMATCH 定性：2006 年代栈的老 TLS 与现代浏览器不兼容，服务本身正常，非必需页面
+
+| 2026-09-06 10:10 | 修复 kitserver 分辨率检测两处：①DPI 缩放陷阱——PrimaryScreen.Bounds 返回逻辑分辨率(4K@150%=2560x1440)，改用 WMI Win32_VideoController 读物理分辨率(实测 3840x2160)；②多显示器——检测到多个不同分辨率时列出让用户选择(朋友 Win7 用 Get-WmiObject 兼容)；make_release.bat 已确认含 /R:1 /W:1 与 kitserver 清单并完成同步；8191 管理页 ERR_SSL_VERSION_OR_CIPHER_MISMATCH 定性：2006 年代栈的老 TLS 与现代浏览器不兼容，服务本身正常，非必需页面
+
 【维护约定】本文档随每次改动同步更新，不另行通知。
