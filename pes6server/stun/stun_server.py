@@ -265,6 +265,10 @@ class StunServer:
                 out(f'[warn] relay {e}')
                 continue
             now = time.time()
+            src_ip, src_port = addr[0], addr[1]
+            if is_private_lan(src_ip):
+                # 本机游戏经路由器 SNAT 回环而来: 还原真实局域网地址, 转发走 LAN 直达
+                addr = (self.lan_ip, src_port)
             counters[addr] = counters.get(addr, 0) + 1
             known = [p for p, t in list(peers.items()) if now - t < 60]
             if addr not in known:
