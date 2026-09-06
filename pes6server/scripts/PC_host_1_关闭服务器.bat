@@ -29,6 +29,7 @@ taskkill /F /IM twistd.exe >nul 2>&1
 
 echo 【2/4】 停止 STUN 应答器...
 for /f "tokens=4" %%a in ('netstat -ano -p udp ^| findstr /c:":3478 "') do taskkill /F /PID %%a >nul 2>&1
+for /f "tokens=4" %%a in ('netstat -ano -p udp ^| findstr /c:":5735 "') do taskkill /F /PID %%a >nul 2>&1
 
 echo 【3/4】 停止 MySQL(先优雅关闭, 失败再强制)...
 mysql\mysql-5.7.44-winx64\bin\mysqladmin.exe -u root shutdown >nul 2>&1

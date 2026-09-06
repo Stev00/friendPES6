@@ -224,6 +224,7 @@ echo 【跳过】 未提供公网 IP, 无法链路验证
   powershell -NoProfile -Command "8190,8191,10881 | ForEach-Object {$c=New-Object Net.Sockets.TcpClient;$r=$c.BeginConnect('%PUBIP%',$_,$null,$null);if($r.AsyncWaitHandle.WaitOne(5000,$true) -and $c.Connected){Write-Host ('  【OK】 TCP '+$_+' 可达')}else{Write-Host ('  【X】 TCP '+$_+' 连不上')};$c.Close()}"
 echo 【说明】 有【OK】即链路通【这是 TCP 检测, 与 ping/ICMP 无关】; 正式收尾删了 8190 映射的话, 8190 不通属正常
 echo          全部不通才需排查: 主机服务是否在跑 / 防火墙 TCP 规则 / 路由器 DMZ 端口映射
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\rtt_measure.ps1" "%PUBIP%"
 )
 :ask_game_c
 set "G="
