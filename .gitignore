@@ -24,3 +24,6 @@ Thumbs.db
 desktop.ini
 # ===== Python 运行时 =====
 __pycache__/
+# ===== kitserver 运行时状态(每局变动) =====
+kitserver/lodmixer.dat
+kitserver/stadium.dat
