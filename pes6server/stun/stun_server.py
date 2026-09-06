@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 r"""
-PES6 自建 STUN (老式 RFC3489 语义) + 对战 UDP 中继  v7
+PES6 自建 STUN (老式 RFC3489 语义) + 对战 UDP 中继  v8 (预注册主机游戏端点, 消除准备顺序依赖)
 - 主 socket:  0.0.0.0:3478          (接收一切首次探测)
 - 备 socket:  LAN_IP:3479 / 127.0.0.1:3479   (真实"第二IP:端口", 满足 CHANGE-REQUEST)
 - Binding Response 携带 MAPPED-ADDRESS / SOURCE-ADDRESS / CHANGED-ADDRESS
@@ -83,12 +83,13 @@ def parse_attrs(data: bytes):
 
 
 class StunServer:
-    def __init__(self, lan_ip, pub_ip, base_port=3478, relay_port=0):
+    def __init__(self, lan_ip, pub_ip, base_port=3478, relay_port=0, game_port=5730):
         self.lan_ip = lan_ip
         self.pub_ip = pub_ip
         self.base_port = base_port
         self.alt_port = base_port + 1
         self.relay_port = relay_port
+        self.game_port = game_port
         self.primary = None
         self.alt_loop = None
         self.alt_lan = None
@@ -249,6 +250,7 @@ class StunServer:
         peers = {}
         counters = {}
         last_stat = time.time()
+        local_peer = (self.lan_ip, self.game_port)   # 主机游戏固定端点, 预注册永不超时
         recent = []          # (time, data, addr) 近期包缓冲, 供新端点补发
         while True:
             try:
@@ -271,7 +273,8 @@ class StunServer:
                 addr = (self.lan_ip, src_port)
             counters[addr] = counters.get(addr, 0) + 1
             known = [p for p, t in list(peers.items()) if now - t < 60]
-            if addr not in known:
+            known.append(local_peer)
+            if addr not in known and addr != local_peer:
                 out(f'中继: 新端点 {addr[0]}:{addr[1]} (当前 {len(known)+1} 个)')
                 # 把最近 3 秒内的缓冲包补发给新端点(消除首包竞态)
                 for bt, bdata, baddr in list(recent):
@@ -280,7 +283,8 @@ class StunServer:
                             s.sendto(bdata, addr)
                         except OSError:
                             pass
-            peers[addr] = now
+            if addr != local_peer:
+                peers[addr] = now
             recent.append((now, data, addr))
             del recent[:-64]
             if time.time() - last_stat >= 10:
@@ -302,8 +306,9 @@ def main():
     ap.add_argument('--lan-ip', default='192.168.50.113')
     ap.add_argument('--base-port', type=int, default=3478)
     ap.add_argument('--relay-port', type=int, default=0)
+    ap.add_argument('--game-port', type=int, default=5730)
     a = ap.parse_args()
-    StunServer(a.lan_ip, a.public_ip, a.base_port, a.relay_port).run()
+    StunServer(a.lan_ip, a.public_ip, a.base_port, a.relay_port, a.game_port).run()
 
 
 if __name__ == '__main__':

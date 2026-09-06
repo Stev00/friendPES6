@@ -119,7 +119,7 @@ echo 【OK】 数据表已存在
 rem ============ 6. 启动 STUN(已在运行则跳过) ============
 netstat -ano -p udp | findstr /c:":3478 " >nul
 if errorlevel 1 (
-  start "PES6-STUN" /min python "%ROOT%\stun\stun_server.py" --public-ip %PUBIP% --lan-ip %LANIP% --relay-port 5731
+  start "PES6-STUN" /min python "%ROOT%\stun\stun_server.py" --public-ip %PUBIP% --lan-ip %LANIP% --relay-port 5731 --game-port 5730
 echo 【信息】 STUN 已启动
 ) else (
 echo 【信息】 STUN 已在运行, 跳过
