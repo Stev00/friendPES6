@@ -27,6 +27,6 @@ foreach($l in $lines){
   }
   if(-not $done){ $out+=$l }
 }
-if($changed -eq 0){ Write-Host ("KLOAD-MATCH screen="+$res); exit 0 }
+if($changed -eq 0){ Write-Host ("【跳过】 kitserver 分辨率与当前一致("+ $res +"), 无需修改"); exit 0 }
 [System.IO.File]::WriteAllLines($cfgPath,$out,[System.Text.Encoding]::Default)
 Write-Host ("KLOAD-UPDATED screen="+$res+" keys="+$changed)
