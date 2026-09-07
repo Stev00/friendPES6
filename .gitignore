@@ -31,3 +31,5 @@ kitserver/stadium.dat
 mess/
 # ===== dev 内误建的 release 残留 =====
 release/
+# ===== 收款码图片(不上传) =====
+weixin_qrcode.png
