@@ -309,3 +309,4 @@ D:\Games\friendPES6\
 | 2026-09-07 19:00 | 账号收敛：仅保留 tester1/tester2(其余删除)；重要定性——认证 hash 以【游戏客户端实际发送值】为准(注册页公式与游戏端存在差异, 已从 1.1 归档数据实锤)；make_release 排除 mysql/data 防账号库被覆盖
 | 2026-09-07 19:22 | 修复选 3Ye 后"连接到服务器失败"：users 与 profiles 映射错位(库覆盖后 user_id 错挂旧名"3Ye")，服务器报 User may not have a defined state yet。两库重建 profiles(user_id↔username 一一对应)；账号收敛为 tester1/tester2；make_release 已排除 mysql/data 防复发
 | 2026-09-07 19:35 | 注册数据定版：用户通过注册页重注册 tester1(hash dc93bed4)/tester2(hash 57f70e06)，profiles 一一对应；两库(dev/1.2)账号数据同步一致。此 hash 即游戏实际发送值(与用户游戏端存储凭证匹配)——之前"公式对不上"之谜的答案：用户注册页注册时提交的就是这套 hash, 游戏端与其一致
+| 2026-09-07 19:41 | 客机【2/5】文案理顺：三段互斥/顺序关系理清(重要=总则, OK/警告=两分支, 提示=黑屏才用)；修正警告分支旧文案"UPnP 不勾"为"保持勾选"(与现行为一致)

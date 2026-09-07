@@ -183,17 +183,16 @@ if exist "%GAME_DIR%\kitserver\kload.cfg" (
 echo 【跳过】 kitserver 未安装, 跳过分辨率适配
 )
 echo 【2/5】检查 settings.dat【UDP 端口自动补丁为 5730】
-echo 【重要】 settings.exe 里 UPnP 请保持勾选! 它是对战 P2P 联机的关键(自动在路由器开端口)
+echo 【重要】 settings.exe 里 UPnP 保持勾选【对战联机关键, 自动在路由器开端口】
 set "SDAT="
 if exist "%USERPROFILE%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat" set "SDAT=%USERPROFILE%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat"
 if not defined SDAT if defined OneDrive if exist "%OneDrive%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat" set "SDAT=%OneDrive%\Documents\KONAMI\Pro Evolution Soccer 6\settings.dat"
 if defined SDAT (
   powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='%SDAT%'; if (-not (Test-Path ($p+'.pes6bak'))){Copy-Item $p ($p+'.pes6bak')}; $b=[IO.File]::ReadAllBytes($p); $old=$b[416]+$b[417]*256; $b[416]=0x62; $b[417]=0x16; [IO.File]::WriteAllBytes($p,$b); Write-Host ('  【OK】 UDP 端口已设为 5730 【原值 '+$old+'】, 备份在 settings.dat.pes6bak')"
-echo 【提示】 若对战黑屏: 打开 settings.exe 确认 UPnP 处于勾选状态, 保存后重启游戏重连
-echo        ("自动"勾选已被自动补丁处理; UPnP 是客机对战的关键, 千万别取消)
+echo 【提示】 若之后对战黑屏: 打开 settings.exe 确认 UPnP 为勾选状态, 保存后重进游戏
 ) else (
-echo 【警告】 未找到 settings.dat【还没保存过游戏设置】, 请手动做一次:
-echo 双击游戏目录的 settings.exe: UDP 端口取消"自动"勾选并填 5730, UPnP 不勾, 点保存
+echo 【警告】 未找到 settings.dat【游戏还没保存过设置】, 请手动做一次:
+echo 双击游戏目录的 settings.exe: UDP 端口取消"自动"勾选并填 5730, UPnP 保持勾选, 点保存
 echo 完成后按任意键继续检测...
   pause >nul
 )
