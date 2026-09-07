@@ -1,4 +1,5 @@
 @echo off
+setlocal EnableDelayedExpansion
 rem 版本: v1.1 (2026-09-07)  Stev00
 echo 【版本】 PC_host_1_关闭服务器 v1.1 (2026-09-07)
 cd /d "%~dp0.."
@@ -94,7 +95,7 @@ echo (无日志文件)
 )
 echo ------------------------------------
 echo.
-if "%FAIL%"=="1" (
+if "!FAIL!"=="1" (
 echo 【结果】 存在未停止的服务: 请用管理员身份重新运行一键关闭
 ) else (
 echo 【结果】 全部服务已停止
