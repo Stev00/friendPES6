@@ -7,8 +7,12 @@
 > 【已验证】= 本次实测过；【高可能】= 公开资料/社区经验一致但未实测；【待验证】= 必须实际测试才能下结论。
 > 未经实测的结论不得标【已验证】；【待验证】项在实测通过后须更新为【已验证】并注明日期。
 >
-> **目录结构（2026-09-06 分居）**：`D:\GamesriendPES6\dev\` = 开发区（游戏本体+pes6server+git 仓库，本文档路径均相对此处）；`D:\GamesriendPES6\mess\` = 个人文件区（文本包存档等，不发布不入库）；`D:\GamesriendPES6
-elease\` = 发布区（make_release.bat + 当前输出包 friendPES6_release1.2，主机/客机双角色可用）
+> **目录结构（分居后）**：
+> - `D:\Games\friendPES6\dev` —— 开发区（游戏本体 + pes6server + git 仓库；本文档所有相对路径均基于此处）
+> - `D:\Games\friendPES6\mess` —— 个人文件区（文本包存档等；不发布、不入库）
+> - `D:\Games\friendPES6\release` —— 发布区（`make_release.bat` 同步工具 + 输出包 `friendPES6_release1.2`，主机/客机双角色可用）
+
+
 > **文案约定（持续要求）**：全部脚本与文档的方括号一律用全角【】（含 [OK]→【OK】、步骤号→【1/6】）；
 > 括号块内的 echo 文本禁止半角圆括号，一律用【】（半角 ) 会被 cmd 当作块结束符）。
 
@@ -426,5 +430,25 @@ tt_results.log` 逐包记录 RTT——朋友零操作【2026-09-06 实测回环 
 | 2026-09-06 20:25 | 用户决定维持 DMZ(端口映射清单已存档备查)；安全收紧(第九节)保留为长期选项
 
 | 2026-09-07 13:04 | GDB 球场包移除(用户清理, stadiums 置空)+camerazoomer/speeder 配置微调，提交入库；发布前扫描：六服务配置内含 ServerIP(当前公网 IP)与管理密码(第 36 行)，README 无硬编码 IP——发布到 GitHub 前需处理两项
+
+## 十四、项目引用与致谢
+
+- Kitserver 6.8.x —— juce & robbie（版本记录：https://kitserver.mapote.com/ks6/history.txt ｜ 源码：https://github.com/kitserver/kitserver6 ）
+- Fiveserver 0.4.8 —— PES6/WE2007 大厅服务端（evo-league 社区项目分支）
+- MySQL 5.7.44 —— Oracle Community Edition（便携版打包）
+- 自建 STUN/中继/RTT（stun_server.py）—— 本项目原创组件（RFC3489 语义 + 端点学习式中继）
+- PES6vn 方案调研参考 —— https://pes6.online/huong-dan （已归档于 _archive）
+
+## 十五、支持作者（微信收款码）
+
+如果这套自建服务器帮你和朋友重新踢上了实况，请作者喝杯饮料：
+
+![微信收款码](./weixin_qrcode.png)
+
+（将 `weixin_qrcode.png` 放在本 README 同目录即可显示）
+
+---
+
+| 2026-09-07 13:09 | 发布准备：①sixserver.yaml 脱敏(ServerIP 置空待运行时自动写入, 管理密码占位 CHANGE-ME)；②修复文档头部目录结构块的 3 处控制字符残损(/ 转义坑, friendPES6/release 被吞字母)并规范化为带完整路径与连接符的三行清单；③文末新增【十四、项目引用与致谢】【十五、支持作者(微信收款码占位 ./weixin_qrcode.png)】
 
 【维护约定】本文档随每次改动同步更新，不另行通知。
