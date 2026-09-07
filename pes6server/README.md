@@ -16,9 +16,9 @@
 - 包内容：游戏本体 + pes6server 全套（含 MySQL、STUN exe、kitserver）
 - 主机解压后：`pes6server\一键启动.bat` 选 1
 - 客机解压后：`pes6server\一键启动.bat` 选 2
-- 内置测试账号（开服即有）：`tester1`、`tester2`——密码为部署时预设，**向服主索取**
-  游戏内登录：序列号栏填 `A6V9D5HXPT62H4PFWA45`，密码栏填 `用户名-密码`（如 `tester1-xxxxxx`）
-  也可在 `http://主机IP:8190/` 注册新账号（注册后由服主确认激活）
+- 内置测试账号（开服即有）：`tester1`、`tester2`，密码均为 `pass123`
+  游戏内登录：序列号栏填 `A6V9D5HXPT62H4PFWA45`，密码栏填 `用户名-pass123`（如 `tester1-pass123`）
+  也可在 `http://主机IP:8190/` 注册新账号
 
 ### 1.2 主机（有公网 IP 的宽带，从零开始 4 步）
 
