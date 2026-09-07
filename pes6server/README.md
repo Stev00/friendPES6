@@ -31,7 +31,6 @@
    ├── PES6.exe  /  settings.exe        ← 游戏主程序与设置程序
    ├── dat\                             ← 游戏数据文件夹
    └── pes6server\                      ← 本仓库下载的文件夹
-   └── pes6server\                       ← 本仓库下载的文件夹
    ```
 3. **下载 MySQL 5.7.44**：mysql-5.7.44-winx64.zip（MySQL 官网归档或社区镜像均可），解压为 `pes6server\mysql\mysql-5.7.44-winx64\`
 4. **安装 Python 3.x**（python.org 下载，勾选 Add to PATH）——STUN/中继/RTT 组件运行环境
