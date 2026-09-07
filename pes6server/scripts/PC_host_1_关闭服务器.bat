@@ -1,6 +1,6 @@
 @echo off
-rem 版本: v1.0 (2026-09-05)  zhangdansan(stevoo)
-echo 【版本】 PC_host_1_关闭服务器 v1.0 (2026-09-05)
+rem 版本: v1.1 (2026-09-07)  Stev00
+echo 【版本】 PC_host_1_关闭服务器 v1.1 (2026-09-07)
 cd /d "%~dp0.."
 for %%i in (".") do set "ROOT=%%~fi"
 if not exist "%ROOT%\mysql\mysql-5.7.44-winx64\bin\mysqladmin.exe" (
