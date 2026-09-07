@@ -33,7 +33,7 @@ Debug:
 DB:
     name: sixserver
     user: sixserver
-    password: proevo
+    password: CHANGE-ME   # ← 首次部署: 设置你的管理/DB 密码(与 mysql 初始化一致)
     readServers: [127.0.0.1]
     writeServers: [127.0.0.1]
     sharePool: True

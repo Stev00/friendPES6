@@ -34,3 +34,5 @@ release/
 # ===== 收款码图片(不上传) =====
 weixin_qrcode.png
 zan.jpg
+# ===== 运行时配置(含本机密码, 不入库; 仓库提供 sixserver.yaml.example 模板) =====
+pes6server/fiveserver/etc/conf/sixserver.yaml
