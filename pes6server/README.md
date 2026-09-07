@@ -10,7 +10,8 @@
 
 ### 1.1 一键懒人包（不想一步步配，直接下载）
 
-**网盘链接：待补充**（此处放置 friendPES6_release1.2 完整压缩包的网盘地址，解压即用）
+**百度网盘**：https://pan.baidu.com/s/1GeOBHmiZdkYUMYnH-z1m4w?pwd=7cti （提取码：`7cti`）
+包内容：friendPES6_release1.2 完整压缩包（游戏 + 服务器全套），解压即用
 
 - 包内容：游戏本体 + pes6server 全套（含 MySQL、STUN exe、kitserver）
 - 主机解压后：`pes6server\一键启动.bat` 选 1
