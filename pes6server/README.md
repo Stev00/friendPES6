@@ -26,7 +26,9 @@
 1. **下载本仓库**（Code → Download ZIP，或 git clone），得到 `pes6server` 文件夹
 2. **下载游戏本体**：PES6 完整游戏目录（PES6.exe / settings.exe / dat\），与 `pes6server` 并排放置：
    ```
-   某个目录   ├── PES6.exe / settings.exe / dat   └── pes6server\        ← 仓库下载的文件夹
+   某个目录\
+   ├── PES6.exe / settings.exe / dat\     ← 游戏本体（自行准备）
+   └── pes6server\                       ← 本仓库下载的文件夹
    ```
 3. **下载 MySQL 5.7.44**：mysql-5.7.44-winx64.zip（MySQL 官网归档或社区镜像均可），解压为 `pes6server\mysql\mysql-5.7.44-winx64\`
 4. **安装 Python 3.x**（python.org 下载，勾选 Add to PATH）——STUN/中继/RTT 组件运行环境
