@@ -102,6 +102,9 @@ echo 【错误】 MySQL 30 秒内未启动, 请查看 mysql\data\*.err 日志
   goto mysql_done
   :mysql_ok
 echo 【OK】 MySQL 已就绪
+rem ---- 测试账号凭证校准(保证 tester1/2 密码=pass123) ----
+"%MBIN\mysql.exe" -u root -D sixserver -e "UPDATE users SET hash='ca2476068a459bdd2c4b5e8ad0344b5b' WHERE username='tester1' AND hash<>'ca2476068a459bdd2c4b5e8ad0344b5b';" >nul 2>&1
+"%MBIN\mysql.exe" -u root -D sixserver -e "UPDATE users SET hash='b9b0be0b5fff18dd46f4a967284648e0' WHERE username='tester2' AND hash<>'b9b0be0b5fff18dd46f4a967284648e0';" >nul 2>&1
 ) else (
 echo 【OK】 MySQL 已在运行
 )
