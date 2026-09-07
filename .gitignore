@@ -29,3 +29,5 @@ kitserver/lodmixer.dat
 kitserver/stadium.dat
 # ===== 个人文件(不发布/不入库) =====
 mess/
+# ===== dev 内误建的 release 残留 =====
+release/
