@@ -1,5 +1,0 @@
-# Stadium information
-
-built = 1996
-capacity = 45000
-city = Liverpool
