@@ -22,7 +22,7 @@
 **这是一套 Windows 平台自建的 PES6 私服联机系统**——在自己电脑上开服务器，和朋友（支持多人，可多台客机同时在线）进行原版 PES6 网络对战。
 仓库只含脚本+文档；游戏本体（版权）与 MySQL/Python（体积）不入库，按下面步骤补齐即可。
 
-### 1.1 主机（有公网 IP 的宽带，从零开始 5 步）
+### 1.1 主机（有公网 IP 的宽带，从零开始 4 步）
 
 1. **下载本仓库**（Code → Download ZIP，或 git clone），得到 `pes6server` 文件夹
 2. **下载游戏本体**：PES6 完整游戏目录（PES6.exe、settings.exe、dat\），与 `pes6server` 并排放置：
@@ -34,8 +34,9 @@
    └── pes6server\                      ← 本仓库下载的文件夹
    ```
 3. **下载 MySQL 5.7.44**：mysql-5.7.44-winx64.zip（MySQL 官网归档或社区镜像均可），解压为 `pes6server\mysql\mysql-5.7.44-winx64\`
-4. **安装 Python 3.x**（python.org 下载，勾选 Add to PATH）——STUN/中继/RTT 组件运行环境
-5. 双击 `pes6server\一键启动.bat` → 输入 `1` → UAC 确认 → 全自动（写注册表/起服务/配防火墙）→ 路由器开 DMZ 或按第六节做端口映射（一次性）→ 进游戏 NETWORK 建房，把**公网 IP**（一键启动窗口会显示）告诉朋友
+4. 双击 `pes6server\一键启动.bat` → 输入 `1` → UAC 确认 → 全自动（写注册表/起服务/配防火墙）→ 路由器开 DMZ 或按第 7 节做端口映射（一次性）→ 进游戏 NETWORK 建房，把**公网 IP**（一键启动窗口会显示）告诉朋友
+
+> STUN/中继/RTT 组件已打包为独立 exe（`pes6server\stun\dist\pes6-stun.exe`），**无需安装 Python**。
 
 ### 1.2 客机（朋友，家庭宽带即可，不需要 Python/MySQL）
 
@@ -52,7 +53,7 @@
 
 | | 主机（开服的人） | 客机（来玩的人） |
 |---|---|---|
-| 需要 | 公网 IP 宽带 + 游戏 + 仓库 + MySQL + Python | 只需完整包（含一切） |
+| 需要 | 公网 IP 宽带 + 游戏 + 仓库 + MySQL | 只需完整包（含一切） |
 | 操作 | 一键启动选 1 + 路由器设置一次 | 一键启动选 2 + 输入主机 IP |
 
 ## 2. 这套东西是什么
@@ -69,7 +70,7 @@
 | 项目 | 要求 | 说明 |
 | --- | --- | --- |
 | 操作系统 | Windows 10 / 11 | 已实测 Win10 |
-| Python 3.x | **需要**（STUN 应答器用） | 已装 3.13 ✓；重装系统后装一个即可，勾选 Add to PATH |
+| Python 3.x | **不需要** | STUN/中继/RTT 已打包为 `stun\dist\pes6-stun.exe`，免 Python 环境 |
 | curl | Win10 系统自带 | 取公网 IP 用（双源在线检测） |
 | MySQL / 大厅服务 | 已内置便携版 | 随 `pes6server` 文件夹分发，零安装 |
 | 网络 | **真实公网 IPv4**（PPPoE 桥接拨号） | 已实测无运营商级 NAT |
