@@ -283,7 +283,7 @@ D:\Games\friendPES6\
 
 如果这套自建服务器帮你和朋友重新踢上了实况，请作者喝杯饮料：
 
-![微信收款码](../../wxcode.jpg)
+![微信收款码](zan.jpg)
 
 （将 `weixin_qrcode.png` 放在本 README 同目录即可显示）
 
