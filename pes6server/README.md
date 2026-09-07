@@ -25,10 +25,11 @@
 ### 1.1 主机（有公网 IP 的宽带，从零开始 5 步）
 
 1. **下载本仓库**（Code → Download ZIP，或 git clone），得到 `pes6server` 文件夹
-2. **下载游戏本体**：PES6 完整游戏目录（PES6.exe / settings.exe / dat\），与 `pes6server` 并排放置：
+2. **下载游戏本体**：PES6 完整游戏目录（PES6.exe、settings.exe、dat\），与 `pes6server` 并排放置：
    ```
    某个目录\
-   ├── PES6.exe  /  settings.exe        ← 游戏主程序与设置程序
+   ├── PES6.exe                          ← 游戏主程序
+   ├── settings.exe                      ← 游戏设置程序
    ├── dat\                             ← 游戏数据文件夹
    └── pes6server\                      ← 本仓库下载的文件夹
    ```
@@ -95,20 +96,27 @@
 ```
 D:\Games\friendPES6\
 ├── dev\                            ← 开发区（游戏 + 项目 + git 仓库；本文所有相对路径基于此）
-│   ├── PES6.exe / settings.exe     ← 游戏主程序与设置
+│   ├── PES6.exe                       ← 游戏主程序
+│   ├── settings.exe                   ← 游戏设置程序
 │   ├── dat\                        ← 游戏数据（1.4G）
 │   ├── kitserver\                  ← Kitserver 6.8.0（mod 框架；GDB 为球衣/球场等资源）
 │   └── pes6server\                 ← 项目主体
-│       ├── 一键启动.bat / 一键关闭.bat   ← 双击入口（先选角色：1 主机 / 2 客机）
+│       ├── 一键启动.bat                 ← 双击入口（先选角色：1 主机 / 2 客机）
+│       ├── 一键关闭.bat                 ← 停服/还原 hosts（先选角色）
 │       ├── README.md               ← 本文档
 │       ├── scripts\                ← 分步脚本（一键流程内部调用，也可单独跑）
 │       │   ├── install.bat         ← 注册表写入（一键启动自动运行；目录变更自动重注册）
-│       │   ├── PC_host_1_启动/关闭服务器.bat
+│       │   ├── PC_host_1_启动服务器.bat
+│       │   ├── PC_host_1_关闭服务器.bat
 │       │   ├── PC_host_2_注册账号-打开网页.bat
-│       │   ├── PC_host_3_改hosts指向本机.bat / _还原.bat
-│       │   ├── PC_host_4_添加防火墙放行.bat / _还原.bat（方案1 后休眠：防火墙规则常驻）
-│       │   ├── PC_host_5_设置ikuai端口转发.bat / _还原.bat
-│       │   ├── PC_client_1_改hosts.bat / _还原.bat   ← 客机用
+│       │   ├── PC_host_3_改hosts指向本机.bat
+│       │   ├── PC_host_3_改hosts指向本机_还原.bat
+│       │   ├── PC_host_4_添加防火墙放行.bat  （方案1 后休眠：防火墙规则常驻）
+│       │   ├── PC_host_4_添加防火墙放行_还原.bat
+│       │   ├── PC_host_5_设置ikuai端口转发.bat
+│       │   ├── PC_host_5_设置ikuai端口转发_还原.bat
+│       │   ├── PC_client_1_改hosts.bat          ← 客机用
+│       │   ├── PC_client_1_改hosts_还原.bat     ← 客机用
 │       │   ├── kit_resolution.ps1  ← kitserver 分辨率自适应
 │       │   └── rtt_measure.ps1     ← 客机链路延迟测量
 │       ├── mysql\                  ← 便携 MySQL 5.7.44（1.4G，data 内含账号库）
