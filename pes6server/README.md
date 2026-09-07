@@ -1,6 +1,6 @@
 # PES6 自建服务器 · 使用说明
 
-> **PChost** = 主机（跑服务器、有公网 IP）｜ **PCclient** = 客机（来联机的朋友）
+> **PChost** = 主机（跑服务器，**必须有公网 IP**，见下）｜ **PCclient** = 客机（来联机的朋友）
 > 本文档随每次改动同步更新｜完整修改历史见 [CHANGELOG.md](./CHANGELOG.md)
 
 ## 1. 两分钟看懂（先读这里）
@@ -10,6 +10,8 @@
 
 ### 1.1 主机（有公网 IP 的宽带，从零开始 4 步）
 
+> **关于公网 IP**：本系统要求主机能被公网直接访问。电信/联通家庭宽带打客服电话（说装监控/NAS）通常可免费开通**动态公网 IP**；配合路由器 DDNS 即可长期稳定。若运营商给的是内网地址（大厂光猫路由模式常见），本系统无法直接开服——可选 Zerotier/Tailscale 虚拟局域网或租云服务器（本系统兼容，但已超出"自建"范畴，此处不展开）。
+
 1. **下载本仓库**（Code → Download ZIP，或 git clone），得到 `pes6server` 文件夹
 2. **下载游戏本体**：PES6 完整游戏目录（PES6.exe、settings.exe、dat\），与 `pes6server` 并排放置：
    ```
@@ -17,6 +19,7 @@
    ├── PES6.exe                          ← 游戏主程序
    ├── settings.exe                      ← 游戏设置程序
    ├── dat\                             ← 游戏数据文件夹
+   ├── kitserver\                      ← Kitserver 6.8.0（mod 框架；GDB 为球衣/球场等资源）
    └── pes6server\                      ← 本仓库下载的文件夹
    ```
 3. **下载 MySQL 5.7.44**：mysql-5.7.44-winx64.zip（MySQL 官网归档或社区镜像均可），解压为 `pes6server\mysql\mysql-5.7.44-winx64\`
