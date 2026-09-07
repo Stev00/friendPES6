@@ -72,6 +72,16 @@ set "ROOT_FW=%ROOT:\=/%"
 rem ============ 3. 把公网 IP 写进 sixserver.yaml ============
 powershell -NoProfile -Command "$f='%ROOT%\fiveserver\etc\conf\sixserver.yaml'; (Get-Content $f) -replace '^ServerIP:.*$','ServerIP: %PUBIP%' | Set-Content $f -Encoding ASCII"
 
+rem ============ 3.5 清理残留进程(防堆叠, 提权环境下有效) ============
+taskkill /F /IM twistd.exe >nul 2>&1
+taskkill /F /IM pes6-stun.exe >nul 2>&1
+for %%p in (10881 20200 20201 20202 20203 8190) do (
+  for /f "tokens=5" %%a in ('netstat -ano -p tcp ^| findstr /c:":%%p " ^| findstr LISTENING') do taskkill /F /PID %%a >nul 2>&1
+)
+for %%p in (3478 5731 5735) do (
+  for /f "tokens=4" %%a in ('netstat -ano -p udp ^| findstr /c:":%%p "') do taskkill /F /PID %%a >nul 2>&1
+)
+ping -n 2 127.0.0.1 >nul
 rem ============ 4. 启动 MySQL(带轮询) ============
 set "MBIN=%ROOT%\mysql\mysql-5.7.44-winx64\bin"
 "%MBIN%\mysqladmin.exe" -u root ping >nul 2>&1

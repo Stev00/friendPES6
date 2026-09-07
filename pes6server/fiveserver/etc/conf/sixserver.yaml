@@ -5,7 +5,7 @@ Comment: |
     NOTE that GamePorts should not be changed, because the corresponding
     games have those values hardcoded into them.
 
-ServerIP: ""   # ← 留空; 一键启动时自动写入当前公网 IP
+ServerIP: 222.90.31.79
 ListenOn: ""
 IpDetectUri: "http://mapote.com/cgi-bin/ip.py"
 
@@ -33,7 +33,7 @@ Debug:
 DB:
     name: sixserver
     user: sixserver
-    password: CHANGE-ME   # ← 管理页密码, 首次部署后自行修改(8191)
+    password: proevo
     readServers: [127.0.0.1]
     writeServers: [127.0.0.1]
     sharePool: True
